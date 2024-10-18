@@ -1,0 +1,220 @@
+#Game
+import random
+import time
+import os
+
+#animating text functions
+def type(text):
+    for char in text:
+        print(char, end='', flush = True)
+        if char == "\n":
+            print()
+        time.sleep(0.03)
+#define ANSI escape codes
+cyan = '\033[36m' #magenta color text
+bright_green =  '\033[92m' #green color text
+reset = '\033[0m' #reset color text
+
+type("Welcome to ")
+time.sleep(0.5) #delay upcoming text for 0.5 seconds
+type(f"{cyan}{"Nïɱ"}{reset}")
+time.sleep(1)
+type("\nPress the"f"{bright_green}{" enter "}{reset}" "key to continue")
+user_input = input("\n> ")  #get user input
+
+while True: #start while loop until certain condition is met (enter key)
+    if user_input == "": #if user presses enter key
+        os.system('cls') #os system clears console
+        time.sleep(0.5)
+        break #breaks user from while loop
+    else: user_input != "" #if user input anything else other than enter
+    os.system('cls')
+    print("\nPress the" f"{bright_green}{"enter"}{reset}" "key to continue!") 
+    user_input = input("> ")  #get user input
+    continue #continue the while loop until condition is met
+time.sleep(0.1)
+os.system('cls')
+time.sleep(0.2)
+#==================================================================================================================
+def  two_player_game():
+    #Define player 1 and player 2
+    red = '\033[31m' #red color text
+    blue = '\033[34m' #blue color text
+    reset = '\033[0m' #reset color text
+    type("Enter your name PLAYER 1:  ")
+    player1 = input("\n> ")
+    type("PLAYER 1: " + f"{red}{player1}{reset}")
+    time.sleep(0.5)
+    type("\nEnter your name PLAYER 2: ")
+    player2 = input("\n> ")
+    type("PLAYER 2: " + f"{blue}{player2}{reset}")
+    time.sleep(0.5)
+    time.sleep(0.5)
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+    #pick number
+    def pick_number():
+        while True:
+            os.system('cls')  
+            type(f"{red}{player1}{reset} pick a number from 1 to 10")
+            coin_input1 = input("\n> ")
+
+            # check if input is a valid number for player 1
+            if coin_input1.isdigit() and 1 <= int(coin_input1) <= 10:
+                coin_input1 = int(coin_input1)
+                time.sleep(1)
+                type(f"{blue}{player2}{reset} pick a number from 1 to 10")
+                coin_input2 = input("\n> ")
+                
+                # check if input is a valid number for player 2
+                if coin_input2.isdigit() and 1 <= int(coin_input2) <= 10:
+                    coin_input2 = int(coin_input2)
+                    break  
+                else:
+                    type("Invalid input. Please select a valid number.")
+                    time.sleep(0.2)
+                    continue  
+            else:
+                type("Invalid input. Please select a valid number.")
+                time.sleep(0.2)
+                continue  
+
+        return coin_input1, coin_input2 
+
+    red = '\033[31m'  #red text color
+    blue = '\033[34m' #blue text color
+    reset = '\033[0m' #reset text color
+
+    coin_input1, coin_input2 = pick_number()
+
+    flip_coin = random.randint(1, 10)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    type("Randomizing number...")
+    time.sleep(1)
+
+    random_number = random.randint(1, 10)
+
+    #calculate differences
+    diff1 = abs(coin_input1 - random_number)
+    diff2 = abs(coin_input2 - random_number)
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(0.5)
+    while True:
+        if diff1 < diff2:
+            type(f"{red}{player1}{reset} starts first! (Closest to {random_number})")
+            time.sleep(1)
+            break
+        elif diff2 < diff1:
+            type(f"{blue}{player2}{reset} starts first! (Closest to {random_number})")
+            time.sleep(1)
+            break
+        else:
+            if diff1 == diff2 or diff2 == diff1:
+                time.sleep(0.4)
+                type("\nBoth players are equally close to the random number.")
+                time.sleep(0.4)
+                os.system('cls')
+                pick_number()
+                continue
+
+    os.system('cls')
+    time.sleep(0.5)
+
+    player = 2
+    piles = [3, 5, 7]
+
+    def showobjects(piles):
+        for i, pile in enumerate(piles):
+            print("|"*piles[i])
+
+    def gameover(piles):
+        return all(pile == 0 for pile in piles)
+
+    while not gameover(piles):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        showobjects(piles)
+
+        player  = 3 - player
+        if player == 1:
+            print(f"{player1}'s turn!")
+        elif  player == 2:
+            print(f"{player2}'s turn!")
+        player_move=False
+
+        while not player_move:
+            type(f"Enter the pile number to move from 1 to {len(piles)}:")
+            chosen_pile = input('\n> ')
+            if chosen_pile.isdigit(): 
+                chosen_pile = int(chosen_pile)
+            else: 
+                type("must be a digit\n")
+                continue
+            if chosen_pile > 0 and chosen_pile <= len(piles):
+                if piles[chosen_pile-1] ==0:
+                    type("pile is empty\n")
+                    continue
+                type(f"Enter the amount to remove from pile {chosen_pile}:")
+                amount_to_remove = input("\n> ")
+                if amount_to_remove.isdigit():
+                    amount_to_remove = int(amount_to_remove)
+                    if amount_to_remove > 0 and amount_to_remove  <= piles[chosen_pile-1]:
+                        player_move=True
+                        piles[chosen_pile-1] -= amount_to_remove
+                    else:
+                        type("not between zero!\n")
+                        continue
+                else:
+                    type("must be a digit\n")
+                    continue
+            else: 
+                type(f"Invalid pile number. Please choose a pile between 1 and {len(piles)}\n")
+                continue
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+    time.sleep(0.5)
+    player  = 3 - player
+    if player == 1:
+            print(f"{player1} wins!")
+    elif  player == 2:
+            print(f"{player2} wins!")
+#=============================================================================================================================
+def vs_computer():
+    green = '\033[32m' #green color text
+    reset = '\033[0m' #reset color text
+    type("Enter your name PLAYER:  ")
+    player1 = input("\n> ")
+    type("PLAYER: " + f"{green}{player1}{reset}")
+    time.sleep(0.5)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
+
+#====================================================================================================================
+while True:
+    os.system('cls')
+    bright_magenta = '\033[95m'
+    bright_yellow =  '\033[93m' #green color text
+    reset = '\033[0m' #reset color text
+    type("Select game mode ("f"{bright_yellow}{"1: Two Player"}{reset}, "f"{bright_magenta}{"2: VS Computer"}{reset}):")
+    game_input = input("\n> ")
+
+    if game_input == "1" or game_input == "Two player" or game_input == "Two Player" or game_input == "two player" or game_input == "two Player" or game_input == "TWO PLAYER" or game_input == "TWOPLAYER" or game_input == "Twoplayer" or game_input== "twoplayer" or game_input == "TwoPlayer" or game_input == "twoPlayer":
+        os.system('cls')  
+        type("Two Player mode selected!")
+        time.sleep(0.4)
+        os.system('cls')
+        two_player_game()
+
+    elif game_input == "2" or  game_input == "VS Computer" or game_input == "VS computer" or game_input == "vs computer" or game_input == "vs Computer" or game_input == "VS COMPUTER" or game_input == "VsComputer" or game_input == "vscomputer" or game_input == "Vscomputer" or game_input == "vsComputer":
+        os.system('cls')  
+        type("Vs Computer mode selected!")
+        time.sleep(0.4)
+        os.system('cls')
+        break
+    else:
+        type("Invalid input. Please select a valid game mode.")
+        time.sleep(0.2)
+        os.system('cls')
+        type("Select game mode ("f"{bright_yellow}{"1: Two Player"}{reset}, "f"{bright_magenta}{"2: VS Computer"}{reset}):")
+        game_input = input("\n> ")
+        continue
